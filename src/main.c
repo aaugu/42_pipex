@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:33:53 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/04 14:06:00 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/06 22:57:23 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,29 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	**paths;
-	char	***cmds;
+	t_pipex	pipex;
 
 	if (argc < 5)
 		return (0);
-	paths = parse_paths(envp);
-	if (!paths)
+	pipex.paths = parse_paths(envp);
+	if (!pipex.paths)
 		return (0);
-	cmds = parse_commands(argv, argc);
-	if (!cmds)
+	pipex.cmds = parse_commands(argv, argc);
+	if (!pipex.cmds)
 		return (0);
-	// if (are_commands_valid(cmds, argc, paths) == FALSE)
-	// {
-	// 	ft_printf("Nope\n");
-	// 	return (0);
-	// }
 	return (0);
 }
 
-void	free_all_strs(char ***tab)
+void	error_exit(t_pipex *pipex, char *message)
 {
-	int	i;
+	ft_printf("%s\n", message);
+	end_pipex(pipex);
+}
 
-	i = 0;
-	while (tab[i])
-	{
-		ft_strs_free(tab[i], ft_strs_len(tab[i]));
-		i++;
-	}
+void	end_pipex(t_pipex *pipex)
+{
+	if (pipex->paths)
+		ft_strs_free(pipex->paths, ft_strs_len(pipex->paths));
+	if (pipex->cmds)
+		ft_strs_free(pipex->cmds, 2);
 }

@@ -9,7 +9,7 @@ LIBFT = libft/libft.a
 RM = rm -f
 
 SRCS_FILES = 	main.c \
-				parse_paths.c \
+				paths_and_commands.c \
 				commands.c \
 
 SRCS = $(addprefix ./src/, $(SRCS_FILES))

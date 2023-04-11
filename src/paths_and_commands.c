@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_paths.c                                      :+:      :+:    :+:   */
+/*   paths_and_commands.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 11:00:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/04 13:06:20 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/06 22:41:08 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*get_path_line(char **envp)
 	while (envp[i])
 	{
 		if (ft_strnstr(envp[i], "PATH=", 5))
-			return (ft_strnstr(envp[i], "PATH=", 5) + 5);
+			return (envp[i] + 5);
 		i++;
 	}
 	return (NULL);
