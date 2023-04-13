@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   paths_and_commands.c                               :+:      :+:    :+:   */
+/*   paths_and_commands_bonus.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/04 11:00:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/11 12:52:24 by aaugu            ###   ########.fr       */
+/*   Created: 2023/04/11 15:02:07 by aaugu             #+#    #+#             */
+/*   Updated: 2023/04/12 15:19:46 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/pipex.h"
+#include "../include/pipex_bonus.h"
 
 char	*get_path_line(char **envp);
 
@@ -44,10 +44,10 @@ char	*get_path_line(char **envp)
 
 char	**parse_commands(char **argv, int argc)
 {
-	char **cmds;
-	int nb_cmds;
-	int i;
-	int j;
+	char	**cmds;
+	int		nb_cmds;
+	int		i;
+	int		j;
 
 	nb_cmds = argc - 3;
 	cmds = (char **)malloc(sizeof(char *) * (nb_cmds + 1));
@@ -75,6 +75,7 @@ char	*get_cmd_path(char **paths, char *cmd)
 	char	*tmp;
 	int		i;
 
+	i = 0;
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/");

@@ -9,8 +9,8 @@ LIBFT = libft/libft.a
 RM = rm -f
 
 SRCS_FILES = 	main.c \
-				paths_and_commands.c \
-				commands.c \
+				paths.c \
+				process.c \
 
 SRCS = $(addprefix ./src/, $(SRCS_FILES))
 OBJS = $(SRCS:%.c=%.o)
