@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:37:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/12 15:57:25 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/14 11:45:46 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct s_pipex
 	char	*cmd_path;
 	int		fd_in;
 	int		fd_out;
-	int		pid[0];
+	int		pid[2];
 	int		pipe[2];
 }			t_pipex;
 

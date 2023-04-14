@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   paths_and_commands.c                               :+:      :+:    :+:   */
+/*   paths.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 11:00:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/11 15:01:29 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/14 13:34:59 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*get_cmd_path(char **paths, char *cmd)
 		if (!cmd_path)
 			return (NULL);
 		free(tmp);
-		if (access(cmd_path, 0) == 0)
+		if (access(cmd_path, R_OK & W_OK & X_OK & F_OK) == 0)
 			return (cmd_path);
 		free(cmd_path);
 		paths++;
