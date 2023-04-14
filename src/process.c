@@ -6,14 +6,14 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/14 14:09:12 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/14 14:50:13 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
 void	child_process(t_pipex *pipex, char **argv, char **envp);
-void	parent_process(t_pipex *pipex, char **argv, char **envp, pid_t pid);
+void	parent_process(t_pipex *pipex, char **argv, char **envp);
 
 void	process(t_pipex *pipex, char **argv, char **envp)
 {
@@ -25,7 +25,10 @@ void	process(t_pipex *pipex, char **argv, char **envp)
 	else if (pid == 0)
 		child_process(pipex, argv, envp);
 	else
-		parent_process(pipex, argv, envp, pid);
+	{
+		waitpid(pid, NULL, 0);
+		parent_process(pipex, argv, envp);
+	}
 }
 
 void	child_process(t_pipex *pipex, char **argv, char **envp)
@@ -49,9 +52,8 @@ void	child_process(t_pipex *pipex, char **argv, char **envp)
 	}
 }
 
-void	parent_process(t_pipex *pipex, char **argv, char **envp, pid_t pid)
+void	parent_process(t_pipex *pipex, char **argv, char **envp)
 {
-	waitpid(pid, NULL, 0);
 	if (dup2(pipex->pipe[0], STDIN_FILENO) == ERROR)
 		error_exit(pipex, "Duplication stdin 2", EXIT_FAILURE);
 	if (dup2(pipex->fd_out, STDOUT_FILENO) == ERROR)
