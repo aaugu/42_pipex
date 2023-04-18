@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:37:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/17 16:33:17 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/18 13:36:37 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,9 @@ typedef struct s_pipex
 
 void	init(t_pipex *pipex, int argc, char **argv, char **envp);
 void	process(t_pipex *pipex, char **argv, char **envp);
-void	close_fds(t_pipex *pipex);
-int		error_exit(t_pipex *pipex, char *message, int code);
+void	close_pipe(t_pipex *pipex);
+void	error_message(char *arg, char *message);
+void	error_exit(t_pipex *pipex, char *arg, char *message, int code);
 void	end_pipex(t_pipex *pipex, int code);
 
 #endif

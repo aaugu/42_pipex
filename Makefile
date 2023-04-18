@@ -11,6 +11,7 @@ RM = rm -f
 SRCS_FILES = 	main.c \
 				init.c \
 				process.c \
+				error_exit.c
 
 SRCS = $(addprefix ./src/, $(SRCS_FILES))
 OBJS = $(SRCS:%.c=%.o)
