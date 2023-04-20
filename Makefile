@@ -10,6 +10,7 @@ RM = rm -f
 
 SRCS_FILES = 	main.c \
 				init.c \
+				init_utils.c \
 				process.c \
 				error_exit.c
 

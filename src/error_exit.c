@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 13:06:54 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/18 13:38:33 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/21 01:12:40 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,19 @@ void	error_exit(t_pipex *pipex, char *arg, char *message, int code)
 
 void	end_pipex(t_pipex *pipex, int code)
 {
-	if (!pipex->paths)
-		ft_strs_free(pipex->paths, ft_strs_len(pipex->paths));
-	if (!pipex->cmd_args)
-		ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
-	if (pipex->cmd_path)
-		free(pipex->cmd_path);
 	if (pipex->fd_in)
 		close(pipex->fd_in);
 	if (pipex->fd_out)
 		close(pipex->fd_out);
+	if (pipex->paths)
+		ft_strs_free(pipex->paths, ft_strs_len(pipex->paths));
+	if (pipex->cmds_path[0])
+		free(pipex->cmds_path[0]);
+	if (pipex->cmds_path[1])
+		free(pipex->cmds_path[1]);
+	if (pipex->cmds[0])
+		free(pipex->cmds[0]);
+	if (pipex->cmds[1])
+		free(pipex->cmds[1]);
 	exit(code);
 }
