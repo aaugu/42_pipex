@@ -2,7 +2,8 @@ NAME = pipex
 CC = gcc
 FLAGS = -Wall -Wextra -Werror
 
-INCLUDE = -I include -I libft
+INCLUDE = -I include/pipex.h -I libft
+INCLUDE_BONUS = -I include/pipex_bonus.h -I libft
 LIB = -Llibft -lft
 LIBFT = libft/libft.a
 
@@ -17,6 +18,15 @@ SRCS_FILES = 	main.c \
 SRCS = $(addprefix ./src/, $(SRCS_FILES))
 OBJS = $(SRCS:%.c=%.o)
 
+BONUS_FILES = 	main_bonus.c \
+				init_files_bonus.c \
+				init_bonus.c \
+				utils_bonus.c \
+				error_exit_bonus.c
+
+BONUS_SRCS = $(addprefix ./bonus/, $(BONUS_FILES))
+BONUS_OBJS = $(BONUS_SRCS:%.c=%.o)
+
 %.o : %.c
 			@$(CC) $(FLAGS) -c $< -o $@
 
@@ -25,6 +35,11 @@ all:		$(NAME)
 $(NAME):	$(LIBFT) $(OBJS)
 			@echo " [ .. ] | Compiling pipex.."
 			@($(CC) $(FLAGS) $(INCLUDE) $(OBJS) $(LIB) -o $(NAME))
+			@echo " [ OK ] | pipex ready!"
+
+bonus:		$(LIBFT) $(BONUS_OBJS)
+			@echo " [ .. ] | Compiling pipex.."
+			@($(CC) $(FLAGS) $(INCLUDE_BONUS) $(BONUS_OBJS) $(LIB) -o $(NAME))
 			@echo " [ OK ] | pipex ready!"
 
 $(LIBFT):
