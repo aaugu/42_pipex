@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 11:53:28 by aaugu             #+#    #+#             */
-/*   Updated: 2023/03/16 14:20:22 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/25 13:27:26 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	ft_median(int *list, int size)
 	else
 		median = list[size / 2];
 	return (median);
+	return (0);
 }
 
 // int	ft_median_strs(char **list, int size)

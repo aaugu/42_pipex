@@ -37,10 +37,10 @@ $(NAME):	$(LIBFT) $(OBJS)
 			@($(CC) $(FLAGS) $(INCLUDE) $(OBJS) $(LIB) -o $(NAME))
 			@echo " [ OK ] | pipex ready!"
 
-# bonus:		$(LIBFT) $(BONUS_OBJS)
-# 			@echo " [ .. ] | Compiling pipex.."
-# 			@($(CC) $(FLAGS) $(INCLUDE_BONUS) $(BONUS_OBJS) $(LIB) -o $(NAME))
-# 			@echo " [ OK ] | pipex ready!"
+bonus:		$(LIBFT) $(BONUS_OBJS)
+			@echo " [ .. ] | Compiling pipex.."
+			@($(CC) $(FLAGS) $(INCLUDE_BONUS) $(BONUS_OBJS) $(LIB) -o $(NAME))
+			@echo " [ OK ] | pipex ready!"
 
 $(LIBFT):
 			@echo " [ .. ] | Compiling libft.."
@@ -60,7 +60,5 @@ fclean: 	clean
 			@echo " [ OK ] | Everything is clean!"
 
 re: 		fclean all
-
-reb:		fclean bonus
 
 .PHONY:		all clean fclean re
