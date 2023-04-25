@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:33:53 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/24 15:39:58 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/25 09:36:13 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,6 @@ int	main(int ac, char **av, char **envp)
 	pipex.nb_cmds = check_args(&pipex, ac, av);
 	init_files(&pipex, ac, av);
 	init(&pipex, av, envp);
-	int	i = 0;
-	while (i < pipex.nb_cmds)
-	{
-		ft_printf("cmd > %s / cmd_path > %s\n", pipex.cmds[i], pipex.cmds_path[i]);
-		i++;
-	}
 	// if (pipe(pipex.pipe) == ERROR)
 	// 	error_exit(&pipex, "pipe", "unable to create a pipe", EXIT_FAILURE);
 	// exit_code = process(&pipex, av, envp);
@@ -54,4 +48,3 @@ int	check_args(t_pipex *pipex, int ac, char **av)
 		return (ac - 3);
 	}
 }
-

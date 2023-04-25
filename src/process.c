@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/24 09:57:11 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/25 11:51:55 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 
 void	child_process(t_pipex *pipex, char **argv, char **envp)
 {
+	if (pipex->fd_in < 0)
+		exit(EXIT_FAILURE);
 	if (dup2(pipex->fd_in, STDIN_FILENO) == ERROR || \
 		dup2(pipex->pipe[1], STDOUT_FILENO) == ERROR)
 	{
@@ -95,7 +97,14 @@ char	**get_args(char *args)
 	char	**cmd_args;
 	int		size;
 
-	if (ft_strrchr(args, '\"') || ft_strrchr(args, '\''))
+	if (ft_strrchr(args, '\"') && ft_strrchr(args, '\''))
+	{	
+		if (get_pos(args, '\"') < get_pos(args, '\''))
+			cmd_args = split_quotes(args, '\"');
+		else
+			cmd_args = split_quotes(args, '\'');
+	}
+	else if (ft_strrchr(args, '\"') || ft_strrchr(args, '\''))
 	{
 		if (ft_strrchr(args, '\"'))
 			cmd_args = ft_split(args, '\"');

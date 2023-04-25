@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:52:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/24 15:39:51 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/25 09:32:49 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ void	get_infile(t_pipex *pipex, char *limiter)
 		if (ft_strcmp(line, limiter) == 0)
 			break ;
 		write(pipex->fd_in, line, ft_strlen(line));
-
 		free(line);
 	}
 	close(pipex->fd_in);

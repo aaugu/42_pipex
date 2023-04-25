@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 16:21:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/24 15:39:41 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/25 09:31:59 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,3 @@ void	get_paths(t_pipex *pipex, char **envp)
 	if (!pipex->paths)
 		error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
 }
-
