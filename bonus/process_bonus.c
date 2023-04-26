@@ -6,113 +6,64 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/25 14:48:09 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/26 14:53:48 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-void	child_process(t_pipex *pipex, char **argv, char **envp);
-void	parent_process(t_pipex *pipex, char **argv, char **envp);
-char	**get_args(char *args);
-void	close_pipe(int in, int out);
+void	child_process(t_pipex *pipex, char *cmd, char **envp, int i);
+void	get_in_and_out(t_pipex *pipex, int i);
 
 int	process(t_pipex *pipex, char **argv, char **envp)
 {
-	pid_t	pid;
-	int		status;
+	int	exit_code;
+	int	i;
 
-	pid = fork();
-	if (pid < 0)
-		error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
-	else if (pid == 0)
-		child_process(pipex, argv, envp);
-	else
-		parent_process(pipex, argv, envp);
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status) != 0)
+	i = 0;
+	while (i < pipex->nb_cmds)
 	{
-		error_message(argv[0], "command not found");
-		return (WEXITSTATUS(status));
+		pipex->process.pids[i] = fork();
+		if (pipex->process.pids[i] < 0)
+			error_exit(pipex, "fork failed", "Resource temporarily unavailable"\
+			, 4);
+		else if (pipex->process.pids[i] == 0)
+			child_process(pipex, argv[2 + pipex->heredoc + i], envp, i);
+		i++;
 	}
-	close_pipes(pipex->pipes);
-	return (0);
+	exit_code = wait_for_childs(pipex);
+	close_pipes(pipex);
+	return (exit_code);
 }
 
-void	child_process(t_pipex *pipex, char **argv, char **envp)
+void	child_process(t_pipex *pipex, char *cmd, char **envp, int i)
 {
-	if (pipex->fd_in < 0)
-		exit(EXIT_FAILURE);
-	if (dup2(pipex->fd_in, STDIN_FILENO) == ERROR || \
-		dup2(pipex->pipes[1], STDOUT_FILENO) == ERROR)
+	get_in_and_out(pipex, i);
+	if (dup2(pipex->process.in, STDIN_FILENO) == ERROR || \
+		dup2(pipex->process.out, STDOUT_FILENO) == ERROR)
 	{
 		error_message("dup2", "bad file descriptor");
 		exit(errno);
 	}
-	close_pipe(pipex->pipes[0], pipex->pipes[1]);
-	pipex->cmd_args = get_args(argv[2]);
-	if (!pipex->cmd_args)
+	close_pipes(pipex);
+	pipex->process.cmd_args = get_args(cmd);
+	if (!pipex->process.cmd_args)
 	{
 		error_message("malloc", "malloc failed");
 		exit(EXIT_FAILURE);
 	}
-	execve(pipex->cmds_path[0], pipex->cmd_args, envp);
-	error_message(argv[2], "command not found");
-	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
+	execve(pipex->cmds_path[i], pipex->process.cmd_args, envp);
+	error_message(cmd, "command not found");
+	ft_strs_free(pipex->process.cmd_args, ft_strs_len(pipex->process.cmd_args));
 	exit(127);
 }
 
-void	parent_process(t_pipex *pipex, char **argv, char **envp)
+void	get_in_and_out(t_pipex *pipex, int i)
 {
-	if (dup2(pipex->pipes[0], STDIN_FILENO) == ERROR || \
-		dup2(pipex->fd_out, STDOUT_FILENO) == ERROR)
-	{
-		error_message("dup2", "bad file descriptor");
-		exit(errno);
-	}
-	close_pipe(pipex->pipes[0], pipex->pipes[1]);
-	pipex->cmd_args = get_args(argv[3]);
-	if (!pipex->cmd_args)
-	{
-		error_message("malloc", "malloc failed");
-		exit(EXIT_FAILURE);
-	}
-	execve(pipex->cmds_path[1], pipex->cmd_args, envp);
-	error_message(argv[3], "command not found");
-	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
-	exit(127);
-}
-
-void	close_pipe(int in, int out)
-{
-	close(in);
-	close(out);
-}
-
-char	**get_args(char *args)
-{
-	char	**cmd_args;
-	int		size;
-
-	if (ft_strrchr(args, '\"') && ft_strrchr(args, '\''))
-	{	
-		if (get_pos(args, '\"') < get_pos(args, '\''))
-			cmd_args = split_quotes(args, '\"');
-		else
-			cmd_args = split_quotes(args, '\'');
-	}
-	else if (ft_strrchr(args, '\"') || ft_strrchr(args, '\''))
-	{
-		if (ft_strrchr(args, '\"'))
-			cmd_args = ft_split(args, '\"');
-		else
-			cmd_args = ft_split(args, '\'');
-		if (!cmd_args)
-			return (NULL);
-		size = ft_strlen(cmd_args[0]);
-		cmd_args[0][size - 1] = '\0';
-	}
-	else
-		cmd_args = ft_split(args, ' ');
-	return (cmd_args);
+	pipex->process.in = pipex->process.pipes[2 * i - 2];
+	pipex->process.out = pipex->process.pipes[2 * i + 1];
+	if (i == 0)
+		pipex->process.in = pipex->fd_in;
+	else if (i == pipex->nb_cmds - 1)
+		pipex->process.out = pipex->fd_out;
 }

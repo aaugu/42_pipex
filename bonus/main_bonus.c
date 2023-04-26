@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:33:53 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/25 14:23:51 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/26 15:27:59 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,23 @@
 
 int		check_args(t_pipex *pipex, int ac, char **av);
 void	create_pipes(t_pipex *pipex);
-void	close_pipes(t_pipex *pipex);
 
 int	main(int ac, char **av, char **envp)
 {
 	t_pipex		pipex;
-	// int			exit_code;
+	int			exit_code;
 
 	pipex = (t_pipex){0};
 	pipex.nb_cmds = check_args(&pipex, ac, av);
 	init_files(&pipex, ac, av);
 	init(&pipex, av, envp);
+	if (pipex.fd_in < 0)
+		error_exit(&pipex, NULL, NULL, EXIT_FAILURE);
 	create_pipes(&pipex);
-	// exit_code = process(&pipex, av, envp);
-	// close_pipes(&pipex);
-	// end_pipex(&pipex, exit_code);
-	// return (0);
+	exit_code = process(&pipex, av, envp);
+	close_pipes(&pipex);
+	end_pipex(&pipex, exit_code);
+	return (0);
 }
 
 int	check_args(t_pipex *pipex, int ac, char **av)
@@ -56,24 +57,28 @@ void	create_pipes(t_pipex *pipex)
 	int	nb_pipes;
 	int	i;
 
+	i = 0;
 	nb_pipes = pipex->nb_cmds - 1;
-	pipex->pipes = (int *)malloc(sizeof(int) * (2 * nb_pipes));
-	if (!pipex->pipes)
+	pipex->process.pipes = (int *)malloc(sizeof(int) * (2 * nb_pipes));
+	if (!pipex->process.pipes)
 		error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
-	while (*pipex->pipes)
+	while (pipex->process.pipes[i])
 	{
-		if (pipe(*pipex->pipes) == ERROR)
-			error_exit(&pipex, "pipe", "unable to create a pipe", EXIT_FAILURE);
-		pipex->pipes + 2;
+		if (pipe(&pipex->process.pipes[i]) == ERROR)
+			error_exit(pipex, "pipe", "unable to create a pipe", EXIT_FAILURE);
+		i += 2;
 	}
 }
 
 void	close_pipes(t_pipex *pipex)
 {
-	while (*pipex->pipes)
+	int	i;
+
+	i = 0;
+	while (i < (pipex->nb_cmds - 1) * 2)
 	{
-		close(pipex->pipes);
-		pipex->pipes++;
+		close(pipex->process.pipes[i]);
+		i++;
 	}
-	free(pipex->pipes);
+	free(pipex->process.pipes);
 }

@@ -22,6 +22,8 @@ BONUS_FILES = 	main_bonus.c \
 				init_files_bonus.c \
 				init_bonus.c \
 				utils_bonus.c \
+				process_bonus.c \
+				process_utils_bonus.c \
 				error_exit_bonus.c
 
 BONUS_SRCS = $(addprefix ./bonus/, $(BONUS_FILES))
@@ -40,7 +42,7 @@ $(NAME):	$(LIBFT) $(OBJS)
 bonus:		$(LIBFT) $(BONUS_OBJS)
 			@echo " [ .. ] | Compiling pipex.."
 			@($(CC) $(FLAGS) $(INCLUDE_BONUS) $(BONUS_OBJS) $(LIB) -o $(NAME))
-			@echo " [ OK ] | pipex ready!"
+			@echo " [ OK ] | pipex bonus ready!"
 
 $(LIBFT):
 			@echo " [ .. ] | Compiling libft.."
@@ -60,5 +62,7 @@ fclean: 	clean
 			@echo " [ OK ] | Everything is clean!"
 
 re: 		fclean all
+
+reb: 		fclean bonus
 
 .PHONY:		all clean fclean re
