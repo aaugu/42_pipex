@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:33:53 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/27 11:02:59 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 14:04:48 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ int	main(int ac, char **av, char **envp)
 	pipex.nb_cmds = check_args(&pipex, ac, av);
 	init_files(&pipex, ac, av);
 	init(&pipex, av, envp);
-	if (pipex.fd_in < 0)
-		error_exit(&pipex, NULL, NULL, EXIT_FAILURE);
 	create_pipes(&pipex);
 	exit_code = process(&pipex, av, envp);
 	close_pipes(&pipex);
@@ -62,7 +60,7 @@ void	create_pipes(t_pipex *pipex)
 	pipex->process.pipes = (int *)malloc(sizeof(int) * (2 * nb_pipes));
 	if (!pipex->process.pipes)
 		error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
-	while (pipex->process.pipes[i])
+	while (i < 2 * nb_pipes)
 	{
 		if (pipe(&pipex->process.pipes[i]) == ERROR)
 			error_exit(pipex, "pipe", "unable to create a pipe", EXIT_FAILURE);
@@ -77,7 +75,6 @@ void	close_pipes(t_pipex *pipex)
 	i = 0;
 	while (i < (pipex->nb_cmds - 1) * 2)
 	{
-		ft_putstr_fd("ici\n", 2);
 		close(pipex->process.pipes[i]);
 		i++;
 	}

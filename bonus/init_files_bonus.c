@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:52:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/27 10:05:34 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 13:16:09 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,7 @@ void	init_files(t_pipex *pipex, int ac, char **av)
 	else
 		pipex->fd_in = open(av[1], O_RDONLY);
 	if (pipex->fd_in < 0)
-	{
 		error_message(av[1], "No such file or directory");
-		pipex->infile = FALSE;
-	}
-	else
-		pipex->infile = TRUE;
 	open_outfile(pipex, av[ac - 1]);
 }
 

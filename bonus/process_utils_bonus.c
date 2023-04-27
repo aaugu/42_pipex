@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 11:26:50 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/26 14:57:42 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 13:59:17 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	**get_args(char *args)
 	int		size;
 
 	if (ft_strrchr(args, '\"') && ft_strrchr(args, '\''))
-	{
+	{	
 		if (get_pos(args, '\"') < get_pos(args, '\''))
 			cmd_args = split_quotes(args, '\"');
 		else
@@ -83,40 +83,3 @@ int	get_pos(char *s, char c)
 	}
 	return (-1);
 }
-
-int	wait_for_childs(t_pipex *pipex)
-{
-	int	i;
-	int	status;
-
-	i = 0;
-	while (i < pipex->nb_cmds)
-	{
-		waitpid(pipex->process.pids[i], &status, 0);
-		if (WIFEXITED(status) != 0)
-			return (WEXITSTATUS(status));
-		i++;
-	}
-	return (0);
-}
-
-// void	close_process_pipes(t_pipex *pipex, int i)
-// {
-// 	if (pipex->process.in == pipex->fd_in)
-// 	{
-// 		close(pipex->process.pipes[2 * i - 2]);
-// 		close(pipex->process.out);
-// 	}
-// 	else if (pipex->process.out == pipex->fd_out)
-// 	{
-// 		close(pipex->process.in);
-// 		close(pipex->process.pipes[2 * i + 1]);
-// 	}
-// 	else
-// 	{
-// 		close(pipex->process.in);
-// 		close(pipex->process.pipes[2 * i - 2 + 1]);
-// 		close(pipex->process.out);
-// 		close(pipex->process.pipes[2 * i + 1 - 1]);
-// 	}
-// }

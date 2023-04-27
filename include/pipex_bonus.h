@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:37:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/26 14:57:15 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 13:59:14 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ char	*get_cmd(char *full_cmd);
 char	*get_cmd_path(char **paths, char *cmd_args, char *cmd);
 char	**get_args(char *args);
 int		process(t_pipex *pipex, char **argv, char **envp);
-int		wait_for_childs(t_pipex *pipex);
 void	close_pipes(t_pipex *pipex);
 void	error_exit(t_pipex *pipex, char *arg, char *message, int code);
 void	error_message(char *arg, char *message);

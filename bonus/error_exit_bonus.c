@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 13:06:54 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/27 10:59:44 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 11:59:00 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void	end_pipex(t_pipex *pipex, int code)
 		ft_strs_free(pipex->cmds_path, ft_strs_len(pipex->cmds_path));
 	if (pipex->cmds)
 		ft_strs_free(pipex->cmds, ft_strs_len(pipex->cmds));
-	if (pipex->process.pipes)
-		free(pipex->process.pipes);
+	if (pipex->process.pids)
+		free(pipex->process.pids);
 	if (pipex->heredoc)
 		unlink("heredoc_tmp");
 	exit(code);
