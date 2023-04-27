@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/26 14:53:48 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 11:21:26 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,15 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 	while (i < pipex->nb_cmds)
 	{
 		pipex->process.pids[i] = fork();
+		ft_putstr_fd("ici\n", 2);
 		if (pipex->process.pids[i] < 0)
-			error_exit(pipex, "fork failed", "Resource temporarily unavailable"\
-			, 4);
+			error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
 		else if (pipex->process.pids[i] == 0)
 			child_process(pipex, argv[2 + pipex->heredoc + i], envp, i);
 		i++;
 	}
+	exit_code = 0;
 	exit_code = wait_for_childs(pipex);
-	close_pipes(pipex);
 	return (exit_code);
 }
 
@@ -42,7 +42,7 @@ void	child_process(t_pipex *pipex, char *cmd, char **envp, int i)
 	if (dup2(pipex->process.in, STDIN_FILENO) == ERROR || \
 		dup2(pipex->process.out, STDOUT_FILENO) == ERROR)
 	{
-		error_message("dup2", "bad file descriptor");
+		error_message("dup2", "Bad file descriptor");
 		exit(errno);
 	}
 	close_pipes(pipex);

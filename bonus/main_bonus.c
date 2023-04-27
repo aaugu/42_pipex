@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:33:53 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/26 15:27:59 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 11:02:59 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	close_pipes(t_pipex *pipex)
 	i = 0;
 	while (i < (pipex->nb_cmds - 1) * 2)
 	{
+		ft_putstr_fd("ici\n", 2);
 		close(pipex->process.pipes[i]);
 		i++;
 	}

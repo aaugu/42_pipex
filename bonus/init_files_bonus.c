@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:52:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/26 15:32:21 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/27 10:05:34 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,16 @@ void	init_files(t_pipex *pipex, int ac, char **av)
 {
 	char	*limiter;
 
-	limiter = NULL;
 	if (pipex->heredoc == TRUE)
 	{
 		limiter = ft_strjoin(av[2], "\n");
 		if (!limiter)
 			error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
 		get_infile(pipex, limiter);
+		free(limiter);
 	}
 	else
 		pipex->fd_in = open(av[1], O_RDONLY);
-	if (limiter)
-		free(limiter);
 	if (pipex->fd_in < 0)
 	{
 		error_message(av[1], "No such file or directory");
