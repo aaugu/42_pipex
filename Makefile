@@ -23,7 +23,6 @@ BONUS_FILES = 	main_bonus.c \
 				init_bonus.c \
 				utils_bonus.c \
 				process_bonus.c \
-				process_utils_bonus.c \
 				error_exit_bonus.c
 
 BONUS_SRCS = $(addprefix ./bonus/, $(BONUS_FILES))

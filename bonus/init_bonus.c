@@ -6,32 +6,43 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 16:21:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/27 13:53:27 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/28 15:00:09 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-void	get_paths(t_pipex *pipex, char **envp);
-void	get_commands_and_paths(t_pipex *pipex, char **av);
+void	get_commands(t_pipex *pipex, char **argv);
+char	**get_paths(char **envp);
+void	get_commands_path(t_pipex *pipex, char **paths, char **argv);
 void	commands_error_handling(t_pipex *pipex, char **av);
-int		cmds_invalid(t_pipex *pipex);
 
-void	init(t_pipex *pipex, char **av, char **envp)
+// Check args, open fds, get command paths for execve
+void	init(t_pipex *pipex, char **argv, char **envp)
 {
-	int	i;
+	char	**paths;
 
-	i = 0;
-	get_paths(pipex, envp);
-	get_commands_and_paths(pipex, av);
-	ft_strs_free(pipex->paths, ft_strs_len(pipex->paths));
-	pipex->paths = NULL;
-	commands_error_handling(pipex, av);
+	get_commands(pipex, argv);
+	paths = get_paths(envp);
+	if (!paths)
+		error_exit(pipex, "PATH", "environment variable not found", 1);
+	get_commands_path(pipex, paths, argv);
+	free(paths);
+	commands_error_handling(pipex, argv);
 }
 
-void	get_paths(t_pipex *pipex, char **envp)
+void	get_commands(t_pipex *p, char **argv)
+{
+	p->cmds[0] = get_cmd(argv[2 + p->heredoc]);
+	p->cmds[1] = get_cmd(argv[3 + p->heredoc]);
+	if (!p->cmds[0] || !p->cmds[1])
+		error_exit(p, "malloc", "malloc failed", EXIT_FAILURE);
+}
+
+char	**get_paths(char **envp)
 {
 	char	*path_line;
+	char	**paths;
 
 	while (*envp)
 	{
@@ -40,70 +51,34 @@ void	get_paths(t_pipex *pipex, char **envp)
 		envp++;
 	}
 	if (!path_line)
-		error_exit(pipex, "PATH", "environment variable not found", 1);
-	pipex->paths = ft_split(path_line, ':');
-	if (!pipex->paths)
-		error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
+		return (NULL);
+	paths = ft_split(path_line, ':');
+	if (!paths)
+		return (NULL);
+	return (paths);
 }
 
-void	get_commands_and_paths(t_pipex *pipex, char **av)
+void	get_commands_path(t_pipex *p, char **paths, char **argv)
 {
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 2;
-	pipex->cmds = (char **)malloc(sizeof(char *) * (pipex->nb_cmds + 1));
-	pipex->cmds_path = (char **)malloc(sizeof(char *) * (pipex->nb_cmds + 1));
-	if (!pipex->cmds || !pipex->cmds_path)
-		error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
-	if (pipex->heredoc == TRUE)
-		j++;
-	while (i < pipex->nb_cmds)
-	{
-		pipex->cmds[i] = get_cmd(av[j]);
-		if (!pipex->cmds[i])
-			error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
-		pipex->cmds_path[i] = get_cmd_path(pipex->paths, av[j], pipex->cmds[i]);
-		i++;
-		j++;
-	}
+	p->cmds_path[0] = get_cmd_path(paths, argv[2 + p->heredoc], p->cmds[0]);
+	p->cmds_path[1] = get_cmd_path(paths, argv[3 + p->heredoc], p->cmds[1]);
 }
 
-void	commands_error_handling(t_pipex *pipex, char **av)
+void	commands_error_handling(t_pipex *p, char **av)
 {
 	int	i;
 
-	if (pipex->fd_in < 0 && cmds_invalid(pipex))
+	if (p->fd_in < 0 && (!p->cmds_path[0] || !p->cmds_path[1]))
 		i = 1;
-	else if (pipex->fd_in && cmds_invalid(pipex))
+	else if (p->fd_in && (!p->cmds_path[0] || !p->cmds_path[1]))
 		i = 0;
-	if (cmds_invalid(pipex))
+	if (!p->cmds_path[0] || !p->cmds_path[1])
 	{
-		while (i < pipex->nb_cmds)
+		while (i < 2)
 		{
-			if (pipex->cmds_path[i] == NULL)
-				error_message(av[2 + pipex->heredoc + i], "command not found");
+			if (p->cmds_path[i] == NULL)
+				error_message(av[2 + p->heredoc + i], "command not found");
 			i++;
 		}
-		error_exit(pipex, NULL, NULL, 127);
 	}
-	else if (pipex->fd_in < 0)
-		error_exit(pipex, NULL, NULL, EXIT_FAILURE);
-}
-
-int	cmds_invalid(t_pipex *pipex)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (i < pipex->nb_cmds)
-	{
-		if (!pipex->cmds_path[i])
-			count++;
-		i++;
-	}
-	return (count);
 }

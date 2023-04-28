@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/27 13:53:17 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/28 15:17:45 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	close_pipe(t_pipex *pipex);
 int	process(t_pipex *pipex, char **argv, char **envp)
 {
 	pid_t	pid;
+	pid_t	wpid;
 	int		status;
 
 	pid = fork();
@@ -30,14 +31,9 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 	else
 		parent_process(pipex, argv, envp);
 	waitpid(pid, &status, 0);
-	if (waitpid(pid, &status, 0) == -1)
-	{
-		if (WIFEXITED(status) != 0)
-		{
-			error_message(argv[0], "command not found");
-			return (WEXITSTATUS(status));
-		}
-	}
+	wpid = waitpid(pid, &status, 0);
+	if (WIFEXITED(status) != 0)
+		return (WEXITSTATUS(status));
 	close_pipe(pipex);
 	return (0);
 }
@@ -56,11 +52,10 @@ void	child_process(t_pipex *pipex, char **argv, char **envp)
 	pipex->cmd_args = get_args(argv[2]);
 	if (!pipex->cmd_args)
 	{
-		error_message("malloc", "malloc failed");
+		ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
 		exit(EXIT_FAILURE);
 	}
 	execve(pipex->cmds_path[0], pipex->cmd_args, envp);
-	error_message(argv[2], "command not found");
 	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
 	exit(127);
 }
@@ -77,11 +72,10 @@ void	parent_process(t_pipex *pipex, char **argv, char **envp)
 	pipex->cmd_args = get_args(argv[3]);
 	if (!pipex->cmd_args)
 	{
-		error_message("malloc", "malloc failed");
+		ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
 		exit(EXIT_FAILURE);
 	}
 	execve(pipex->cmds_path[1], pipex->cmd_args, envp);
-	error_message(argv[3], "command not found");
 	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
 	exit(127);
 }

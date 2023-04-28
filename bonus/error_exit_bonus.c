@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 13:06:54 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/27 11:59:00 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/28 14:40:25 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ void	error_message(char *arg, char *message)
 
 void	error_exit(t_pipex *pipex, char *arg, char *message, int code)
 {
-	if (arg && message)
-		error_message(arg, message);
+	error_message(arg, message);
 	end_pipex(pipex, code);
 }
 
@@ -34,15 +33,13 @@ void	end_pipex(t_pipex *pipex, int code)
 		close(pipex->fd_in);
 	if (pipex->fd_out)
 		close(pipex->fd_out);
-	if (pipex->paths)
-		ft_strs_free(pipex->paths, ft_strs_len(pipex->paths));
-	if (pipex->cmds_path)
-		ft_strs_free(pipex->cmds_path, ft_strs_len(pipex->cmds_path));
-	if (pipex->cmds)
-		ft_strs_free(pipex->cmds, ft_strs_len(pipex->cmds));
-	if (pipex->process.pids)
-		free(pipex->process.pids);
-	if (pipex->heredoc)
-		unlink("heredoc_tmp");
+	if (pipex->cmds_path[0])
+		free(pipex->cmds_path[0]);
+	if (pipex->cmds_path[1])
+		free(pipex->cmds_path[1]);
+	if (pipex->cmds[0])
+		free(pipex->cmds[0]);
+	if (pipex->cmds[1])
+		free(pipex->cmds[1]);
 	exit(code);
 }

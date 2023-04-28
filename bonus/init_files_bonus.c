@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:52:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/27 13:16:09 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/28 13:08:07 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,6 @@ void	init_files(t_pipex *pipex, int ac, char **av)
 	open_outfile(pipex, av[ac - 1]);
 }
 
-void	open_outfile(t_pipex *pipex, char *outfile)
-{
-	if (pipex->heredoc == TRUE)
-	{
-		pipex->fd_out = open(outfile, O_CREAT | O_RDWR | O_APPEND, 00644);
-		if (pipex->fd_out < 0)
-			error_exit(pipex, outfile, "No such file or directory", 1);
-	}
-	else
-	{
-		pipex->fd_out = open(outfile, O_CREAT | O_RDWR | O_TRUNC, 00644);
-		if (pipex->fd_out < 0)
-			error_exit(pipex, outfile, "No such file or directory", 1);
-	}
-}
-
 void	get_infile(t_pipex *pipex, char *limiter)
 {
 	char	*line;
@@ -76,4 +60,20 @@ void	get_infile(t_pipex *pipex, char *limiter)
 	pipex->fd_in = open("heredoc_tmp", O_RDONLY);
 	if (pipex->fd_in < 0)
 		error_message("heredoc_tmp", "No such file or directory");
+}
+
+void	open_outfile(t_pipex *pipex, char *outfile)
+{
+	if (pipex->heredoc == TRUE)
+	{
+		pipex->fd_out = open(outfile, O_CREAT | O_RDWR | O_APPEND, 00644);
+		if (pipex->fd_out < 0)
+			error_exit(pipex, outfile, "No such file or directory", 1);
+	}
+	else
+	{
+		pipex->fd_out = open(outfile, O_CREAT | O_RDWR | O_TRUNC, 00644);
+		if (pipex->fd_out < 0)
+			error_exit(pipex, outfile, "No such file or directory", 1);
+	}
 }
