@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:50:07 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/28 10:54:01 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 20:45:07 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,30 +27,21 @@ char	*get_cmd(char *full_cmd)
 	return (cmd);
 }
 
-char	*get_cmd_path(char **paths, char *cmd_args, char *cmd)
+char	*get_cmd_path(char **paths, char *cmd)
 {
-	char	**args;
 	char	*path;
 
+	if (access(cmd, X_OK & F_OK) == 0)
+		return (cmd);
 	while (*paths)
 	{
-		if (access(cmd, X_OK & F_OK) == 0)
-			return (cmd);
-		else
-		{
-			path = get_path(*paths, cmd);
-			args = ft_split(cmd_args, ' ');
-			if (!path || !args)
-				return (NULL);
-			if (access(path, X_OK & F_OK) == 0)
-			{
-				free(args);
-				return (path);
-			}
-			ft_strs_free(args, ft_strs_len(args));
-			free(path);
-			paths++;
-		}
+		path = get_path(*paths, cmd);
+		if (!path)
+			return (NULL);
+		if (access(path, X_OK & F_OK) == 0)
+			return (path);
+		free(path);
+		paths++;
 	}
 	return (NULL);
 }

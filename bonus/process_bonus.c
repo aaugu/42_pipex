@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/30 19:23:31 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 20:52:42 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,45 +37,49 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 
 void	child_process(t_pipex *pipex, char **argv, char **envp)
 {
+	char	**cmd_args;
+
 	if (pipex->fd_in < 0)
 		exit(EXIT_FAILURE);
 	if (dup2(pipex->fd_in, STDIN_FILENO) == ERROR || \
 		dup2(pipex->pipe[1], STDOUT_FILENO) == ERROR)
 	{
-		error_message("dup2", "bad file descriptor");
+		error_message("dup2", "Bad file descriptor");
 		exit(errno);
 	}
 	close_pipe(pipex);
-	pipex->cmd_args = get_args(argv[2 + pipex->heredoc]);
-	if (!pipex->cmd_args)
+	cmd_args = get_args(argv[2 + pipex->heredoc]);
+	if (!cmd_args)
 	{
 		error_message("malloc", "malloc failed");
 		exit(EXIT_FAILURE);
 	}
-	execve(pipex->cmds_path[0], pipex->cmd_args, envp);
-	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
+	execve(pipex->cmds_path[0], cmd_args, envp);
+	ft_strs_free(cmd_args, ft_strs_len(cmd_args));
 	exit(127);
 }
 
 void	parent_process(t_pipex *pipex, char **argv, char **envp)
 {
+	char	**cmd_args;
+
 	if (pipex->heredoc)
 		unlink(".heredoc.tmp");
 	if (dup2(pipex->pipe[0], STDIN_FILENO) == ERROR || \
 		dup2(pipex->fd_out, STDOUT_FILENO) == ERROR)
 	{
-		error_message("dup2", "bad file descriptor");
+		error_message("dup2", "Bad file descriptor");
 		exit(errno);
 	}
 	close_pipe(pipex);
-	pipex->cmd_args = get_args(argv[3 + pipex->heredoc]);
-	if (!pipex->cmd_args)
+	cmd_args = get_args(argv[3 + pipex->heredoc]);
+	if (!cmd_args)
 	{
 		error_message("malloc", "malloc failed");
 		exit(EXIT_FAILURE);
 	}
-	execve(pipex->cmds_path[1], pipex->cmd_args, envp);
-	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
+	execve(pipex->cmds_path[1], cmd_args, envp);
+	ft_strs_free(cmd_args, ft_strs_len(cmd_args));
 	exit(127);
 }
 

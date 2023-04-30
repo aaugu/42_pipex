@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:37:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/30 15:08:29 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 20:51:05 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,18 @@
 
 typedef struct s_pipex
 {
-	char	**cmd_args;
 	char	*cmds[2];
 	char	*cmds_path[2];
 	int		fd_in;
 	int		fd_out;
-	t_bool	heredoc;
 	int		pipe[2];
-	int		pids[2];
+	t_bool	heredoc;
 }			t_pipex;
 
 void	init_files(t_pipex *pipex, int ac, char **av);
 void	init(t_pipex *pipex, char **argv, char **envp);
 char	*get_cmd(char *full_cmd);
-char	*get_cmd_path(char **paths, char *cmd_args, char *cmd);
+char	*get_cmd_path(char **paths, char *cmd);
 int		process(t_pipex *pipex, char **argv, char **envp);
 int		get_pos(char *s, char c);
 char	**split_quotes(char *args, char quote);

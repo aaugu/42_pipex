@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 16:21:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/30 19:25:41 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 20:44:55 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	get_commands(t_pipex *pipex, char **argv);
 char	**get_paths(char **envp);
-void	get_commands_path(t_pipex *pipex, char **paths, char **argv);
+void	get_commands_path(t_pipex *pipex, char **paths);
 void	commands_error_handling(t_pipex *pipex, char **av);
 
 void	init(t_pipex *pipex, char **argv, char **envp)
@@ -25,7 +25,7 @@ void	init(t_pipex *pipex, char **argv, char **envp)
 	paths = get_paths(envp);
 	if (!paths)
 		error_exit(pipex, "PATH", "environment variable not found", 1);
-	get_commands_path(pipex, paths, argv);
+	get_commands_path(pipex, paths);
 	free(paths);
 	commands_error_handling(pipex, argv);
 }
@@ -57,10 +57,10 @@ char	**get_paths(char **envp)
 	return (paths);
 }
 
-void	get_commands_path(t_pipex *p, char **paths, char **argv)
+void	get_commands_path(t_pipex *p, char **paths)
 {
-	p->cmds_path[0] = get_cmd_path(paths, argv[2 + p->heredoc], p->cmds[0]);
-	p->cmds_path[1] = get_cmd_path(paths, argv[3 + p->heredoc], p->cmds[1]);
+	p->cmds_path[0] = get_cmd_path(paths, p->cmds[0]);
+	p->cmds_path[1] = get_cmd_path(paths, p->cmds[1]);
 }
 
 void	commands_error_handling(t_pipex *p, char **av)

@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/30 14:36:41 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 20:51:44 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 		error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
 	else if (pid == 0)
 		child_process(pipex, argv, envp);
-	else
-		parent_process(pipex, argv, envp);
+	parent_process(pipex, argv, envp);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status) != 0)
 		return (WEXITSTATUS(status));
@@ -38,43 +37,47 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 
 void	child_process(t_pipex *pipex, char **argv, char **envp)
 {
+	char	**cmd_args;
+
 	if (pipex->fd_in < 0)
 		exit(EXIT_FAILURE);
 	if (dup2(pipex->fd_in, STDIN_FILENO) == ERROR || \
 		dup2(pipex->pipe[1], STDOUT_FILENO) == ERROR)
 	{
-		error_message("dup2", "bad file descriptor");
+		error_message("dup2", "Bad file descriptor");
 		exit(errno);
 	}
 	close_pipe(pipex);
-	pipex->cmd_args = get_args(argv[2]);
-	if (!pipex->cmd_args)
+	cmd_args = get_args(argv[2]);
+	if (!cmd_args)
 	{
-		ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
+		ft_strs_free(cmd_args, ft_strs_len(cmd_args));
 		exit(EXIT_FAILURE);
 	}
-	execve(pipex->cmds_path[0], pipex->cmd_args, envp);
-	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
+	execve(pipex->cmds_path[0], cmd_args, envp);
+	ft_strs_free(cmd_args, ft_strs_len(cmd_args));
 	exit(127);
 }
 
 void	parent_process(t_pipex *pipex, char **argv, char **envp)
 {
+	char	**cmd_args;
+
 	if (dup2(pipex->pipe[0], STDIN_FILENO) == ERROR || \
 		dup2(pipex->fd_out, STDOUT_FILENO) == ERROR)
 	{
-		error_message("dup2", "bad file descriptor");
+		error_message("dup2", "Bad file descriptor");
 		exit(errno);
 	}
 	close_pipe(pipex);
-	pipex->cmd_args = get_args(argv[3]);
-	if (!pipex->cmd_args)
+	cmd_args = get_args(argv[3]);
+	if (!cmd_args)
 	{
-		ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
+		ft_strs_free(cmd_args, ft_strs_len(cmd_args));
 		exit(EXIT_FAILURE);
 	}
-	execve(pipex->cmds_path[1], pipex->cmd_args, envp);
-	ft_strs_free(pipex->cmd_args, ft_strs_len(pipex->cmd_args));
+	execve(pipex->cmds_path[1], cmd_args, envp);
+	ft_strs_free(cmd_args, ft_strs_len(cmd_args));
 	exit(127);
 }
 
@@ -89,6 +92,7 @@ char	**get_args(char *args)
 	char	**cmd_args;
 	int		size;
 
+	cmd_args = NULL;
 	if (ft_strrchr(args, '\"') && ft_strrchr(args, '\''))
 	{
 		if (get_pos(args, '\"') < get_pos(args, '\''))
@@ -102,8 +106,6 @@ char	**get_args(char *args)
 			cmd_args = ft_split(args, '\"');
 		else
 			cmd_args = ft_split(args, '\'');
-		if (!cmd_args)
-			return (NULL);
 		size = ft_strlen(cmd_args[0]);
 		cmd_args[0][size - 1] = '\0';
 	}
