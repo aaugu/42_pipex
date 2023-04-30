@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 13:06:54 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/28 14:40:25 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 19:23:06 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,7 @@ void	end_pipex(t_pipex *pipex, int code)
 		free(pipex->cmds[0]);
 	if (pipex->cmds[1])
 		free(pipex->cmds[1]);
+	if (pipex->heredoc)
+		unlink(".heredoc.tmp");
 	exit(code);
 }

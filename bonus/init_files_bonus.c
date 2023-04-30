@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:52:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/28 13:08:07 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 19:23:18 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ void	get_infile(t_pipex *pipex, char *limiter)
 {
 	char	*line;
 
-	pipex->fd_in = open("heredoc_tmp", O_CREAT | O_WRONLY | O_TRUNC, 00644);
+	pipex->fd_in = open(".heredoc.tmp", O_CREAT | O_WRONLY | O_TRUNC, 00644);
 	if (pipex->fd_in < 0)
-		error_exit(pipex, "heredoc_tmp", "No such file or directory", 1);
+		error_exit(pipex, ".heredoc.tmp", "No such file or directory", 1);
 	while (TRUE)
 	{
 		write(1, "> ", 2);
@@ -49,7 +49,7 @@ void	get_infile(t_pipex *pipex, char *limiter)
 		if (!line)
 		{
 			write(1, "\n", 1);
-			error_exit(pipex, "heredoc_tmp", "Couldn't collect input", 1);
+			error_exit(pipex, ".heredoc.tmp", "Couldn't collect input", 1);
 		}
 		if (ft_strcmp(line, limiter) == 0)
 			break ;
@@ -57,9 +57,9 @@ void	get_infile(t_pipex *pipex, char *limiter)
 		free(line);
 	}
 	close(pipex->fd_in);
-	pipex->fd_in = open("heredoc_tmp", O_RDONLY);
+	pipex->fd_in = open(".heredoc.tmp", O_RDONLY);
 	if (pipex->fd_in < 0)
-		error_message("heredoc_tmp", "No such file or directory");
+		error_message(".heredoc.tmp", "No such file or directory");
 }
 
 void	open_outfile(t_pipex *pipex, char *outfile)

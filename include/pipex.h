@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:37:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/28 15:10:59 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 20:14:30 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef struct s_pipex
 
 void	init(t_pipex *pipex, char **argv, char **envp);
 char	*get_cmd(char *full_cmd);
-char	*get_cmd_path(char **paths, char *cmd_args, char *cmd);
+char	*get_cmd_path(char **paths, char *cmd);
 int		process(t_pipex *pipex, char **argv, char **envp);
 int		get_pos(char *s, char c);
 char	**split_quotes(char *args, char quote);

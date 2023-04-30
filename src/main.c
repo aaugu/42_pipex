@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:33:53 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/28 15:12:19 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 19:26:09 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	main(int argc, char **argv, char **envp)
 	if (pipe(pipex.pipe) == ERROR)
 		error_exit(&pipex, "pipe", "unable to create a pipe", EXIT_FAILURE);
 	exit_code = process(&pipex, argv, envp);
-	ft_printf("coucou\n");
 	end_pipex(&pipex, exit_code);
 	return (0);
 }
@@ -42,7 +41,5 @@ void	open_files(t_pipex *pipex, char **argv)
 		error_message(argv[1], "No such file or directory");
 	pipex->fd_out = open(argv[4], O_CREAT | O_RDWR | O_TRUNC, 00644);
 	if (pipex->fd_out < 0)
-	{
 		error_exit(pipex, argv[4], "No such file or directory", EXIT_FAILURE);
-	}
 }

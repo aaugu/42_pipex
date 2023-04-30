@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 16:21:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/28 15:00:09 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 19:25:41 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ char	**get_paths(char **envp);
 void	get_commands_path(t_pipex *pipex, char **paths, char **argv);
 void	commands_error_handling(t_pipex *pipex, char **av);
 
-// Check args, open fds, get command paths for execve
 void	init(t_pipex *pipex, char **argv, char **envp)
 {
 	char	**paths;

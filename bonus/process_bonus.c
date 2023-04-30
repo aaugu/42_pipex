@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/28 14:28:47 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/04/30 19:23:31 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	close_pipe(t_pipex *pipex);
 int	process(t_pipex *pipex, char **argv, char **envp)
 {
 	pid_t	pid;
-	pid_t	wpid;
 	int		status;
 
 	pid = fork();
@@ -28,13 +27,12 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 		error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
 	else if (pid == 0)
 		child_process(pipex, argv, envp);
-	else
-		parent_process(pipex, argv, envp);
-	wpid = waitpid(pid, &status, 0);
-	if (WIFEXITED(status) != 0)
+	parent_process(pipex, argv, envp);
+	waitpid(-1, &status, 0);
+	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	close_pipe(pipex);
-	return (0);
+	return (1);
 }
 
 void	child_process(t_pipex *pipex, char **argv, char **envp)
@@ -61,6 +59,8 @@ void	child_process(t_pipex *pipex, char **argv, char **envp)
 
 void	parent_process(t_pipex *pipex, char **argv, char **envp)
 {
+	if (pipex->heredoc)
+		unlink(".heredoc.tmp");
 	if (dup2(pipex->pipe[0], STDIN_FILENO) == ERROR || \
 		dup2(pipex->fd_out, STDOUT_FILENO) == ERROR)
 	{
@@ -91,7 +91,7 @@ char	**get_args(char *args)
 	int		size;
 
 	if (ft_strrchr(args, '\"') && ft_strrchr(args, '\''))
-	{	
+	{
 		if (get_pos(args, '\"') < get_pos(args, '\''))
 			cmd_args = split_quotes(args, '\"');
 		else
