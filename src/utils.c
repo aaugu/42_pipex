@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:50:07 by aaugu             #+#    #+#             */
-/*   Updated: 2023/05/01 11:10:51 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/01 14:49:21 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*get_cmd(char *full_cmd)
 	cmd = ft_strdup(cmd_args[0]);
 	if (!cmd)
 		return (NULL);
-	free(cmd_args);
+	ft_strs_free(cmd_args, ft_strs_len(cmd_args));
 	return (cmd);
 }
 

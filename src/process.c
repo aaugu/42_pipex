@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/05/01 11:16:40 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/01 15:17:08 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ int	process(t_pipex *pipex, char **argv, char **envp)
 
 	pid1 = fork();
 	if (pid1 < 0)
-		error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
+		error_exit(pipex, "fork failed", strerror(errno), 4);
 	else if (pid1 == 0)
 		first_child_process(pipex, argv, envp);
 	pid2 = fork();
 	if (pid2 < 0)
-		error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
+		error_exit(pipex, "fork failed", strerror(errno), 4);
 	else if (pid2 == 0)
 		second_child_process(pipex, argv, envp);
 	close_pipe(pipex);
@@ -46,19 +46,17 @@ void	first_child_process(t_pipex *pipex, char **argv, char **envp)
 	char	**cmd_args;
 
 	if (pipex->fd_in < 0)
-		exit(EXIT_FAILURE);
-	if (dup2(pipex->fd_in, STDIN_FILENO) == ERROR || \
-		dup2(pipex->pipe[1], STDOUT_FILENO) == ERROR)
-	{
-		error_message("dup2", "Bad file descriptor");
-		exit(errno);
-	}
+		end_pipex(pipex, EXIT_FAILURE);
+	if (dup2(pipex->fd_in, STDIN_FILENO) == ERROR)
+		error_exit(pipex, argv[1], strerror(errno), errno);
+	if (dup2(pipex->pipe[1], STDOUT_FILENO) == ERROR)
+		error_exit(pipex, "pipe", strerror(errno), errno);
 	close_pipe(pipex);
 	cmd_args = get_args(argv[2]);
 	if (!cmd_args)
 	{
 		ft_strs_free(cmd_args, ft_strs_len(cmd_args));
-		exit(EXIT_FAILURE);
+		error_exit(pipex, "malloc", strerror(errno), errno);
 	}
 	execve(pipex->cmds_path[0], cmd_args, envp);
 	ft_strs_free(cmd_args, ft_strs_len(cmd_args));
@@ -69,18 +67,16 @@ void	second_child_process(t_pipex *pipex, char **argv, char **envp)
 {
 	char	**cmd_args;
 
-	if (dup2(pipex->pipe[0], STDIN_FILENO) == ERROR || \
-		dup2(pipex->fd_out, STDOUT_FILENO) == ERROR)
-	{
-		error_message("dup2", "Bad file descriptor");
-		exit(errno);
-	}
+	if (dup2(pipex->pipe[0], STDIN_FILENO) == ERROR)
+		error_exit(pipex, "pipe", strerror(errno), errno);
+	if (dup2(pipex->fd_out, STDOUT_FILENO) == ERROR)
+		error_exit(pipex, argv[4], strerror(errno), errno);
 	close_pipe(pipex);
 	cmd_args = get_args(argv[3]);
 	if (!cmd_args)
 	{
 		ft_strs_free(cmd_args, ft_strs_len(cmd_args));
-		exit(EXIT_FAILURE);
+		error_exit(pipex, "malloc", strerror(errno), errno);
 	}
 	execve(pipex->cmds_path[1], cmd_args, envp);
 	ft_strs_free(cmd_args, ft_strs_len(cmd_args));
