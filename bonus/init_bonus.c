@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 16:21:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/30 20:44:55 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/01 15:36:21 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ void	init(t_pipex *pipex, char **argv, char **envp)
 	if (!paths)
 		error_exit(pipex, "PATH", "environment variable not found", 1);
 	get_commands_path(pipex, paths);
-	free(paths);
+	ft_strs_free(paths, ft_strs_len(paths));
+	free(pipex->cmds[0]);
+	free(pipex->cmds[1]);
 	commands_error_handling(pipex, argv);
 }
 

@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/18 13:06:54 by aaugu             #+#    #+#             */
-/*   Updated: 2023/05/01 11:11:09 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/01 15:55:36 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,5 @@ void	end_pipex(t_pipex *pipex, int code)
 		free(pipex->cmds_path[0]);
 	if (pipex->cmds_path[1])
 		free(pipex->cmds_path[1]);
-	if (pipex->cmds[0])
-		free(pipex->cmds[0]);
-	if (pipex->cmds[1])
-		free(pipex->cmds[1]);
 	exit(code);
 }
