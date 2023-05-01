@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 16:21:55 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/30 20:15:47 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/01 11:15:41 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ char	**get_paths(char **envp);
 void	get_commands_path(t_pipex *p, char **paths);
 void	commands_error_handling(t_pipex *p, char **av);
 
-// Get command paths for execve
 void	init(t_pipex *pipex, char **argv, char **envp)
 {
 	char	**paths;
@@ -29,14 +28,6 @@ void	init(t_pipex *pipex, char **argv, char **envp)
 	get_commands_path(pipex, paths);
 	free(paths);
 	commands_error_handling(pipex, argv);
-}
-
-void	get_commands(t_pipex *pipex, char **argv)
-{
-	pipex->cmds[0] = get_cmd(argv[2]);
-	pipex->cmds[1] = get_cmd(argv[3]);
-	if (!pipex->cmds[0] || !pipex->cmds[1])
-		error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
 }
 
 char	**get_paths(char **envp)
@@ -56,6 +47,14 @@ char	**get_paths(char **envp)
 	if (!paths)
 		return (NULL);
 	return (paths);
+}
+
+void	get_commands(t_pipex *pipex, char **argv)
+{
+	pipex->cmds[0] = get_cmd(argv[2]);
+	pipex->cmds[1] = get_cmd(argv[3]);
+	if (!pipex->cmds[0] || !pipex->cmds[1])
+		error_exit(pipex, "malloc", "malloc failed", EXIT_FAILURE);
 }
 
 void	get_commands_path(t_pipex *p, char **paths)

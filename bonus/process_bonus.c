@@ -6,36 +6,42 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/04 10:43:20 by aaugu             #+#    #+#             */
-/*   Updated: 2023/04/30 20:52:42 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/01 11:23:58 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-void	child_process(t_pipex *pipex, char **argv, char **envp);
-void	parent_process(t_pipex *pipex, char **argv, char **envp);
-char	**get_args(char *args);
+void	first_child_process(t_pipex *pipex, char **argv, char **envp);
+void	second_child_process(t_pipex *pipex, char **argv, char **envp);
 void	close_pipe(t_pipex *pipex);
+char	**get_args(char *args);
 
 int	process(t_pipex *pipex, char **argv, char **envp)
 {
-	pid_t	pid;
+	pid_t	pid1;
+	pid_t	pid2;
 	int		status;
 
-	pid = fork();
-	if (pid < 0)
+	pid1 = fork();
+	if (pid1 < 0)
 		error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
-	else if (pid == 0)
-		child_process(pipex, argv, envp);
-	parent_process(pipex, argv, envp);
-	waitpid(-1, &status, 0);
+	else if (pid1 == 0)
+		first_child_process(pipex, argv, envp);
+	pid2 = fork();
+	if (pid2 < 0)
+		error_exit(pipex, "fork failed", "Resource temporarily unavailable", 4);
+	else if (pid2 == 0)
+		second_child_process(pipex, argv, envp);
+	close_pipe(pipex);
+	waitpid(pid1, &status, 0);
+	waitpid(pid2, &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	close_pipe(pipex);
 	return (1);
 }
 
-void	child_process(t_pipex *pipex, char **argv, char **envp)
+void	first_child_process(t_pipex *pipex, char **argv, char **envp)
 {
 	char	**cmd_args;
 
@@ -59,7 +65,7 @@ void	child_process(t_pipex *pipex, char **argv, char **envp)
 	exit(127);
 }
 
-void	parent_process(t_pipex *pipex, char **argv, char **envp)
+void	second_child_process(t_pipex *pipex, char **argv, char **envp)
 {
 	char	**cmd_args;
 
