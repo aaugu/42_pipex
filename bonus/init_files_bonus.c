@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:52:57 by aaugu             #+#    #+#             */
-/*   Updated: 2023/05/01 15:52:25 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/03 13:36:59 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int	get_infile(t_pipex *pipex, char *limiter)
 	{
 		write(1, "> ", 2);
 		line = get_next_line(STDIN_FILENO);
-		ft_printf("%p\n", limiter);
 		if (!line)
 		{
 			write(1, "\n", 1);
