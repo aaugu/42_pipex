@@ -6,7 +6,7 @@
 /*   By: aaugu <aaugu@student.42lausanne.ch>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 11:33:53 by aaugu             #+#    #+#             */
-/*   Updated: 2023/05/01 15:04:36 by aaugu            ###   ########.fr       */
+/*   Updated: 2023/05/03 13:27:18 by aaugu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(int argc, char **argv, char **envp)
 	open_files(&pipex, argv);
 	init(&pipex, argv, envp);
 	if (pipe(pipex.pipe) == ERROR)
-		error_exit(&pipex, "pipe", "unable to create a pipe", EXIT_FAILURE);
+		error_exit(&pipex, "pipe", strerror(errno), errno);
 	exit_code = process(&pipex, argv, envp);
 	end_pipex(&pipex, exit_code);
 	return (0);
